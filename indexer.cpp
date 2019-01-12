@@ -131,14 +131,18 @@ void indexer::search(QString input) {
         QTextStream stream(&file);
 
         bool isGGGP = false;
-        qint64 size = input.size();
+        qint32 size  = input.size();
         QString buffer = stream.read(size);
         while (!stream.atEnd()) {
             buffer += stream.read(size);
             if (in_quote(buffer.toStdString(), input.toStdString())) {
                 isGGGP = true;
             }
-            buffer = buffer.mid(buffer.length());
+
+            buffer = buffer.mid(size);
+        }
+        if (in_quote(buffer.toStdString(), input.toStdString())) {
+            isGGGP = true;
         }
 
         if (isGGGP) {
