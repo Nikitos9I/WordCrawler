@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>600</height>
+    <width>699</width>
+    <height>900</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -126,7 +126,7 @@ color: #FFF;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>500</width>
+     <width>699</width>
      <height>22</height>
     </rect>
    </property>
