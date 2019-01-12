@@ -18,7 +18,7 @@ QFileInfoList indexer::getFiles() {
     return files;
 }
 
-qint64 encodeTrigramValue(char ch1, char ch2, char ch3) {
+qint64 encodeTrigramValue(ushort ch1, ushort ch2, ushort ch3) {
     return (static_cast<qint64>(reinterpret_cast<unsigned char const &>(ch1) << 16) |
                 static_cast<qint64>(reinterpret_cast<unsigned char const &>(ch2) << 8) |
                 static_cast<qint64>(reinterpret_cast<unsigned char const &>(ch3)));
@@ -34,14 +34,17 @@ void indexer::encodeFile() {
         file.open(QIODevice::ReadOnly | QIODevice::Text);
 
         if (file.isOpen()) {
-            char buffer[2048];
-            qint64 num;
+//            char buffer[2048];
+            QString buffer;
+//            qint64 num;
             QSet<qint64> trigrams;
             bool isBinaryFile = false;
+            QTextStream stream(&file);
 
-            while ((num = file.read(buffer, 2048)) != 0) {
-                for (int i = 2; i < num; ++i) {
-                    qint64 currentTrigram = encodeTrigramValue(buffer[i - 2], buffer[i - 1], buffer[i]);
+            while (!stream.atEnd()) {
+                buffer += stream.read(2048);
+                for (int i = 2; i < buffer.length(); ++i) {
+                    qint64 currentTrigram = encodeTrigramValue(buffer[i - 2].unicode(), buffer[i - 1].unicode(), buffer[i].unicode());
                     trigrams.insert(currentTrigram);
                 }
 
@@ -55,6 +58,7 @@ void indexer::encodeFile() {
                     sendStatus("", "Indexing canceled");
                     return;
                 }
+                buffer = buffer.mid(buffer.length() - 2, 2);
             }
 
             if (isBinaryFile)
@@ -81,9 +85,9 @@ QVector<qint64> indexer::encodeString(QString input) {
 
     for (int i = 2; i < input.length(); ++i) {
         qint64 currentTrigram = encodeTrigramValue(
-                input.toStdString().c_str()[i - 2],
-                input.toStdString().c_str()[i - 1],
-                input.toStdString().c_str()[i]);
+                input[i - 2].unicode(),
+                input[i - 1].unicode(),
+                input[i].unicode());
 
         trigrams.push_back(currentTrigram);
     }
@@ -105,11 +109,12 @@ void indexer::search(QString input) {
     for (_file myFile : encodedFiles) {
         QSet<qint64> caughtTrigrams;
 
+        bool isGoodFile = true;
         for (int o = 0; o < inputStringTrigrams.size(); ++o) {
             qint64 actualTrigram = inputStringTrigrams[o];
 
-            if (myFile.getTrigrams().contains(actualTrigram)) {
-                caughtTrigrams.insert(actualTrigram);
+            if (!myFile.getTrigrams().contains(actualTrigram)) {
+               isGoodFile = false;
             }
 
             if (canceled == true) {
@@ -118,23 +123,25 @@ void indexer::search(QString input) {
             }
         }
 
-        bool isGoodFile = caughtTrigrams.size() >= inputStringTrigrams.size();
-
         if (!isGoodFile)
             continue;
 
         QFile file(myFile.getFilePath());
         file.open(QIODevice::ReadOnly);
+        QTextStream stream(&file);
 
-        char buffer[2048];
-        qint64 num;
-        while ((num = file.read(buffer, 2048)) != 0) {
-            if (!in_quote(std::string(buffer), input.toStdString().c_str())) {
-                isGoodFile = false;
+        bool isGGGP = false;
+        qint64 size = input.size();
+        QString buffer = stream.read(size);
+        while (!stream.atEnd()) {
+            buffer += stream.read(size);
+            if (in_quote(buffer.toStdString(), input.toStdString())) {
+                isGGGP = true;
             }
+            buffer = buffer.mid(buffer.length());
         }
 
-        if (isGoodFile) {
+        if (isGGGP) {
             ++goodFiles;
             emit addElementToUi(myFile.getFilePath(), myFile.getSize());
         }

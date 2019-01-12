@@ -11,11 +11,11 @@ WordCrawler::WordCrawler(QWidget *parent) : QMainWindow(parent), ui(new Ui::Word
     ui->actionExit->setIcon(style.standardIcon(QCommonStyle::SP_DialogCloseButton));
     ui->actionAbout_us->setIcon(style.standardIcon(QCommonStyle::SP_DialogHelpButton));
 
-    ui->dirLabel->setFixedSize(75, 22);
+//    ui->dirLabel->setFixedSize(75, 22);
     ui->dirLabel->setAlignment(Qt::AlignCenter);
 
     ui->dirNameLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    ui->dirNameLabel->setFixedHeight(22);
+//    ui->dirNameLabel->setFixedHeight(22);
     ui->dirNameLabel->setText(QDir::homePath());
     ui->dirNameLabel->setCursor(Qt::IBeamCursor);
 
@@ -26,9 +26,9 @@ WordCrawler::WordCrawler(QWidget *parent) : QMainWindow(parent), ui(new Ui::Word
     ui->lineEdit->setPlaceholderText("Wait awhile...");
     ui->lineEdit->setDisabled(true);
 
-    ui->chooseDirButton->setFixedSize(100, 20);
+//    ui->chooseDirButton->setFixedSize(100, 20);
 
-    ui->cancelButton->setFixedSize(200, 20);
+//    ui->cancelButton->setFixedSize(200, 20);
 
     /**  ACTIONS  **/
 
