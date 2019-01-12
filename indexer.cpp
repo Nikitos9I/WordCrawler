@@ -8,15 +8,20 @@ QFileInfoList indexer::getFiles() {
 
     while (d.hasNext()) {
         files.push_back(QFileInfo(d.next()));
+
+        if (canceled == true) {
+            sendStatus("", "Indexing files canceled");
+            break;
+        }
     }
 
     return files;
 }
 
 qint64 encodeTrigramValue(char ch1, char ch2, char ch3) {
-    return (static_cast<uint32_t>(reinterpret_cast<unsigned char const &>(ch1) << 16) |
-                static_cast<uint32_t>(reinterpret_cast<unsigned char const &>(ch2) << 8) |
-                static_cast<uint32_t>(reinterpret_cast<unsigned char const &>(ch3)));
+    return (static_cast<qint64>(reinterpret_cast<unsigned char const &>(ch1) << 16) |
+                static_cast<qint64>(reinterpret_cast<unsigned char const &>(ch2) << 8) |
+                static_cast<qint64>(reinterpret_cast<unsigned char const &>(ch3)));
 }
 
 void indexer::encodeFile() {
@@ -26,15 +31,15 @@ void indexer::encodeFile() {
 
     for (QFileInfo fileInfo : files) {
         QFile file(fileInfo.filePath());
-        file.open(QIODevice::ReadOnly);
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
 
         if (file.isOpen()) {
-            char buffer[1024];
+            char buffer[2048];
             qint64 num;
             QSet<qint64> trigrams;
             bool isBinaryFile = false;
 
-            while ((num = file.read(buffer, 1024)) != 0) {
+            while ((num = file.read(buffer, 2048)) != 0) {
                 for (int i = 2; i < num; ++i) {
                     qint64 currentTrigram = encodeTrigramValue(buffer[i - 2], buffer[i - 1], buffer[i]);
                     trigrams.insert(currentTrigram);
@@ -59,6 +64,7 @@ void indexer::encodeFile() {
             myFile.setPath(fileInfo.filePath());
             myFile.setSize(fileInfo.size());
             myFile.setTrigrams(trigrams);
+
             encodedFiles.push_back(myFile);
         }
 
@@ -86,7 +92,7 @@ QVector<qint64> indexer::encodeString(QString input) {
 }
 
 template <typename Container>
-bool in_quote(const Container& cont, const QString& s) {
+bool in_quote(const Container& cont, const std::string& s) {
     return std::search(cont.begin(), cont.end(), s.begin(), s.end()) != cont.end();
 }
 
@@ -120,10 +126,10 @@ void indexer::search(QString input) {
         QFile file(myFile.getFilePath());
         file.open(QIODevice::ReadOnly);
 
-        char buffer[1024];
+        char buffer[2048];
         qint64 num;
-        while ((num = file.read(buffer, 1024)) != 0) {
-            if (!in_quote(std::string(buffer), input)) {
+        while ((num = file.read(buffer, 2048)) != 0) {
+            if (!in_quote(std::string(buffer), input.toStdString().c_str())) {
                 isGoodFile = false;
             }
         }
