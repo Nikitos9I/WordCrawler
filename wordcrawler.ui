@@ -28,9 +28,7 @@ color: #FFF;</string>
          <bool>true</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true">color: rgb(185, 188, 189);
-margin-top: 3px;
-</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>Directory:</string>
@@ -40,11 +38,7 @@ margin-top: 3px;
       <item>
        <widget class="QLabel" name="dirNameLabel">
         <property name="styleSheet">
-         <string notr="true">margin-top: 3px;
-margin-right: 5px;
-padding-top: 2px;
-border: 1px solid rgb(185, 188, 189);
-border-radius: 3px;</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>../nikitos/dev/</string>
@@ -54,16 +48,7 @@ border-radius: 3px;</string>
       <item>
        <widget class="QPushButton" name="chooseDirButton">
         <property name="styleSheet">
-         <string notr="true">QPushButton {
-	background: rgb(174, 177, 178);
-	height: 20px;
-	border-radius: 3px;
-	color: rgb(49, 50, 52);
-}
-
-QPushButton:pressed {
-	background: rgb(152, 156, 150);
-}</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>Choose Other</string>
@@ -75,7 +60,7 @@ QPushButton:pressed {
     <item>
      <widget class="QLineEdit" name="lineEdit">
       <property name="styleSheet">
-       <string notr="true">color: rgb(49, 50, 52);</string>
+       <string notr="true">color: #000;</string>
       </property>
       <property name="readOnly">
        <bool>false</bool>
@@ -88,8 +73,7 @@ QPushButton:pressed {
     <item>
      <widget class="QTreeWidget" name="treeWidget">
       <property name="styleSheet">
-       <string notr="true">background: rgb(255, 255, 255);
-color: rgb(49, 50, 52)</string>
+       <string notr="true"/>
       </property>
       <attribute name="headerMinimumSectionSize">
        <number>100</number>
@@ -126,16 +110,7 @@ color: rgb(49, 50, 52)</string>
       <item>
        <widget class="QPushButton" name="cancelButton">
         <property name="styleSheet">
-         <string notr="true">QPushButton {
-	background: rgb(174, 177, 178);
-	height: 20px;
-	border-radius: 3px;
-	color: rgb(49, 50, 52);
-}
-
-QPushButton:pressed {
-	background: rgb(152, 156, 150);
-}</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>Cancel</string>
